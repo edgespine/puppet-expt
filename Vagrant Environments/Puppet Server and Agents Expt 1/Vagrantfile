@@ -1,0 +1,63 @@
+Vagrant.configure(2) do |config|
+
+#	vagrant plugin install vagrant-hostmanager
+#	vagrant plugin install puppet_server ... puppet agent provisioner
+	config.vm.define "puppet_server" do |puppet|
+		puppet.vm.provision "shell", inline: <<-SHELL
+			sudo echo \”deb http://pkg.s03.filex.com/apt/debian jessie main\”  /etc/sources.list.d/trax.list
+			sudo wget https://apt.puppetlabs.com/puppet-release-xenial.deb
+			sudo dpkg -i puppet-release-xenial.deb
+		 	sudo apt-get update	
+			sudo apt-get -y install puppetmaster-passenger 
+			sudo apt-get -y install puppet 
+			sudo gem install hiera-eyaml
+
+			sudo mkdir -p /etc/eyaml/
+			sudo cp -r /vagrant/config.yaml /etc/eyaml
+			sudo cp -r /vagrant/private_key.pkcs7.pem /var/lib/puppet/ssl/private_keys/
+			sudo cp -r /vagrant/public_key.pkcs7.pem /var/lib/puppet/ssl/public_keys/
+
+			sudo cp -r /vagrant/puppet.conf /etc/puppet/
+			sudo cp -r /vagrant/autosign.conf /etc/puppet/
+			sudo cp -r /vagrant/hiera.yaml /etc/puppet/
+			
+			sudo rm -rf /etc/puppet/modules
+			sudo ln -sf /puppet_data/modules /etc/puppet
+			sudo rm -rf /etc/puppet/lib
+			sudo ln -sf /puppet_data/modules/lib /etc/puppet
+			sudo rm -rf /etc/puppet/manifests
+			sudo ln -sf /puppet_data/manifests /etc/puppet
+			sudo rm -rf /etc/puppet/environments
+			sudo ln -sf /puppet_data/environments /etc/puppet
+			sudo rm  -rf /etc/puppet/hiera
+		SHELL
+		puppet.vm.box = "ubuntu/xenial64"
+		puppet.vm.network :private_network, ip: "10.0.0.19"
+		puppet.vm.synced_folder "/Users/edmin/puppet", "/puppet_data", create: true
+		puppet.hostmanager.aliases = %w(puppet)
+		puppet.hostmanager.enabled = true
+		puppet.hostmanager.ignore_private_ip = false
+		puppet.hostmanager.include_offline = true
+	#	puppet.puppet_server = "puppet.example.com"
+		
+	end
+
+	config.vm.define "agent1" do |agent1|
+		agent1.vm.provision "shell", inline: <<-SHELL
+			sudo wget https://apt.puppetlabs.com/puppet-release-xenial.deb
+			sudo dpkg -i puppet-release-xenial.deb
+		 	sudo apt-get update	
+			sudo apt-get -y install puppet 
+			sudo puppet agent --enable 
+		SHELL
+		agent1.vm.box = "ubuntu/xenial64"
+		agent1.vm.network :private_network, ip: "10.0.0.10"
+		agent1.hostmanager.aliases = %w(agent1)
+		agent1.hostmanager.enabled = true
+		agent1.hostmanager.ignore_private_ip = false
+		agent1.hostmanager.include_offline = true
+	end
+
+
+
+end
