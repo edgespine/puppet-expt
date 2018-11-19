@@ -1,0 +1,33 @@
+---
+profile::linux::php::php_version: '7.1.24'
+profile::linux::apache::apache_version: '2.4'
+profile::linux::apache::serveradmin: 'mdg@ic.ac.uk'
+profile::linux::apache::vhost_dir: '/etc/httpd/conf.d/live'
+profile::linux::apache::sites:
+  root_dirs:
+    file:
+      /www: { ensure: directory } 
+      /www/sites: { ensure: directory }
+
+  www.comp-engine.org:
+    file:
+      /www/sites/www-comp-engine.cc.ic.ac.uk/: { ensure: directory }
+      /www/sites/www-comp-engine.cc.ic.ac.uk/docs/: { ensure: directory }
+    apache::vhost:
+      www.comp-engine.org:
+        serveraliases: [ comp-engine.cc.ic.ac.uk, comp-engine.org ]
+        port:      '80'
+        docroot: '/www/sites/www-comp-engine.cc.ic.ac.uk/docs/'
+        scriptalias: '/cgi-bin/, /www/sites/www-comp-engine.cc.ic.ac.uk/cgi-bin/'
+
+  www.euclids-project.eu:
+    file:
+      /www/sites/www-www.cons-project-d7.cc.imperial.ac.uk/: { ensure: directory }
+      /www/sites/www-www.cons-project-d7.cc.imperial.ac.uk/docs/: { ensure: directory }
+    apache::vhost:
+      www.euclids-project.eu:
+        serveraliases: [ www.uniheat-project.com, www.intarese.org, intarese.org ]
+        port:      '80'
+        docroot: '/www/sites/www-www.cons-project-d7.cc.imperial.ac.uk/docs/'
+        scriptalias: '/cgi-bin/, /www/sites/www-www.cons-project-d7.cc.imperial.ac.uk/cgi-bin/'
+        custom_fragment: '#  Owner : ndryan : Nick D Ryan : n.ryan@imperial.ac.uk'

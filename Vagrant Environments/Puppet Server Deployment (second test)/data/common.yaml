@@ -1,0 +1,6 @@
+---
+message: "This node is using common data"
+profile::puppet_server::backup::cron_config:
+  'user': 'root'
+  'hour': '2'
+  'minute': '0'

@@ -1,0 +1,24 @@
+# Modules used by Puppet each have their own repository in Git
+mod 'apache',
+  :git    => 'git@github.ic.ac.uk:ict-puppet-forge/puppetlabs-apache.git',
+  :tag => '3.4.0'
+
+mod 'concat',
+  :git    => 'git@github.ic.ac.uk:ict-puppet-forge/puppetlabs-concat.git',
+  :tag => '5.1.0'
+
+mod 'stdlib',
+  :git    => 'git@github.ic.ac.uk:ict-puppet-forge/puppetlabs-stdlib.git',
+  :tag => '5.1.0'
+
+mod 'inifile',
+  :git    => 'git@github.ic.ac.uk:ict-puppet-forge/puppetlabs-inifile.git',
+  :tag => '2.4.0'
+
+mod 'archive',
+  :git    => 'git@github.ic.ac.uk:ict-puppet-forge/puppet-archive.git',
+  :tag => 'v3.2.1'
+
+mod 'autofs',
+  :git    => 'git@github.ic.ac.uk:ict-puppet-forge/puppet-autofs.git',
+  :tag => '5.0.1'
