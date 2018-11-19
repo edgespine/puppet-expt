@@ -1,0 +1,19 @@
+https://github.com/CommanderK5/packer-centos-template/releases/download/0.7.2/vagrant-centos-7.2.box
+
+WHERE AE BOX FILES?
+As mentioned in the docs, boxes are stored at:
+    Mac OS X and Linux: ~/.vagrant.d/boxes
+    Windows: C:/Users/USERNAME/.vagrant.d/boxes
+	
+
+BOOT UP A STANDARD CENTOS7 BOX
+mkdir VA/c7p372 && cd VA/c7p372
+vagrant box add puppetmaster https://github.com/tommy-muehle/puppet-vagrant-boxes/releases/download/1.1.0/centos-7.0-x86_64.box
+vagrant init puppetmaster
+vagrant up
+
+mkdir VA/c7 && cd V/c7
+vagrant box add centos7 https://github.com/CommanderK5/packer-centos-template/releases/download/0.7.2/vagrant-centos-7.2.box
+vagrant init centos7
+vagrant up
+
