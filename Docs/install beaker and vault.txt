@@ -36,7 +36,7 @@ Description=Consul
 Documentation=https://www.consul.io/
 
 [Service]
-ExecStart=/usr/bin/consul agent -server -ui -data-dir=/tmp/consul -bootstrap-expect=1 -node=vault -bind=192.168.1.28 -config-dir=/etc/consul.d/
+ExecStart=/usr/bin/consul agent -server -ui -data-dir=/tmp/consul -bootstrap-expect=1 -node=vault -bind=10.0.0.10 -config-dir=/etc/consul.d/
 ExecReload=/bin/kill -HUP $MAINPID
 LimitNOFILE=65536
 
@@ -61,7 +61,7 @@ storage "consul" {
 }
 
 listener "tcp" {
- address     = "155.198.138.13:8200"
+ address     = 127.0.0.1:8200"
  tls_disable = 1
 }
 
@@ -90,7 +90,16 @@ sudo systemctl enable consul
 sudo systemctl start vault
 sudo systemctl enable vault
 
-export VAULT_ADDR=http://155.198.138.13:8200
+export VAULT_ADDR=http://127.0.0.1:8200
+
+#git clone https://github.com/edgespine/puppt.git
+
+sudo apt -y install consul
+sudo consul agent -dev
+vault server -dev &
 
 sudo vault operator init
+
+vault write secret/hello fooo=worl ter=pio "tert tas"=lkjlk  a=b c=d
+vault read -format=json secret/hello
 
