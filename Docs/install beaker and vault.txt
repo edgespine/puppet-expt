@@ -1,11 +1,11 @@
 echo "Installing Virtualbox"
 
-wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
-wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -             ;wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
+wget -q https://www.virtualbox.org/download/oracle_vbox_2016.asc -O- | sudo apt-key add -
+wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key add -
 add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
 
 sudo apt update
-sudo apt install ruby-dev unzip libvirt-dev openssl-dev libxml2-dev libssl-dev virtualbox-5.2
+sudo apt install ruby-dev unzip libvirt-dev libssl-dev libxml2-dev libssl-dev virtualbox-5.2
 
 echo "Installing Vault"
 
