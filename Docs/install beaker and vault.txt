@@ -5,21 +5,25 @@ wget -q https://www.virtualbox.org/download/oracle_vbox.asc -O- | sudo apt-key a
 add-apt-repository "deb [arch=amd64] http://download.virtualbox.org/virtualbox/debian $(lsb_release -cs) contrib"
 
 sudo apt update
-sudo apt install ruby-dev unzip libvirt-dev libssl-dev libxml2-dev libssl-dev virtualbox-5.2
+sudo apt -y install ruby-dev unzip libvirt-dev libssl-dev libxml2-dev libssl-dev virtualbox-5.2 vagrant
+sudo apt -y remove libvirt*
+sudo apt -y autoremove
+
+vagrant plugin install vagrant-hostmanager
+
 
 echo "Installing Vault"
 
-sudo gem update --conservative
-sudo gem install beaker nokogiri-tools nokogiri
+#sudo gem update --conservative
+#sudo gem install beaker nokogiri-tools nokogiri
 
 wget https://releases.hashicorp.com/vault/0.9.5/vault_0.9.5_linux_amd64.zip
 wget https://releases.hashicorp.com/vault/0.9.5/vault_0.9.5_SHA256SUMS
 grep linux_amd64 vault_*_SHA256SUMS | sha256sum -c -
 grep linux_amd64 vault_*_SHA256SUMS | sha256sum -c -
 unzip -o vault_0.9.5_linux_amd64.zip
-mv vault* ~/
-cd
-./vault --version
+mv -f vault /usr/local/bin/ 
+vault --version
 
 
 
@@ -49,16 +53,6 @@ cat > /etc/consul.d/ui.json <<EOF
 }
 EOF
 
-systemctl daemon-reload
-systemctl start consul
-systemctl enable consul
-
-
-
-
-
-
-cp vault /usr/local/bin
 mkdir -p /etc/vault
 cat > /etc/vault/config.hcl <<EOF
 storage "consul" {
@@ -67,7 +61,7 @@ storage "consul" {
 }
 
 listener "tcp" {
- address     = "127.0.0.1:8200"
+ address     = "155.198.138.13:8200"
  tls_disable = 1
 }
 
@@ -80,7 +74,7 @@ Description=Vault
 Documentation=https://www.vault.io/
 
 [Service]
-ExecStart=/usr/bin/vault server -config=/etc/vault/config.hcl
+ExecStart=/usr/local/bin/vault server -config=/etc/vault/config.hcl
 ExecReload=/bin/kill -HUP $MAINPID
 LimitNOFILE=65536
 
@@ -88,11 +82,15 @@ LimitNOFILE=65536
 WantedBy=multi-user.target
 EOF
 
-systemctl daemon-reload
-systemctl start vault
-systemctl enable vault
+sudo systemctl daemon-reload
 
-export VAULT_ADDR=http://127.0.0.1:8200
+sudo systemctl start consul
+sudo systemctl enable consul
 
-vault operator init
+sudo systemctl start vault
+sudo systemctl enable vault
+
+export VAULT_ADDR=http://155.198.138.13:8200
+
+sudo vault operator init
 
