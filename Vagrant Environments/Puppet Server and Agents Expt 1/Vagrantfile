@@ -58,6 +58,15 @@ Vagrant.configure(2) do |config|
 		agent1.hostmanager.include_offline = true
 	end
 
+        config.vm.define "vaultserver" do |vaultserver|
+		vaultserver.vm.provision "shell", path: "vagrant_overlay_vaultserver.sh"
 
+		vaultserver.vm.box = "ubuntu/xenial64"
+		vaultserver.vm.network :private_network, ip: "10.0.0.17"
+		vaultserver.hostmanager.aliases = %w(vaultserver)
+		vaultserver.hostmanager.enabled = true
+                vaultserver.hostmanager.ignore_private_ip = false
+                vaultserver.hostmanager.include_offline = true
 
+        end
 end
