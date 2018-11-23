@@ -5,11 +5,11 @@ Vagrant.configure(2) do |config|
 	config.vm.define "puppet_server" do |puppet|
 		puppet.vm.provision "shell", inline: <<-SHELL
 			sudo echo \”deb http://pkg.s03.filex.com/apt/debian jessie main\”  /etc/sources.list.d/trax.list
-			sudo wget https://apt.puppetlabs.com/puppet-release-xenial.deb
+			sudo curl -s -o puppet-release-xenial.deb https://apt.puppetlabs.com/puppet-release-xenial.deb
 			sudo dpkg -i puppet-release-xenial.deb
-		 	sudo apt-get update	
-			sudo apt-get -y install puppetmaster-passenger 
-			sudo apt-get -y install puppet 
+		 	sudo apt-get -qq update	
+			sudo apt-get -y -qq install puppetmaster-passenger 
+			sudo apt-get -y -qq install puppet 
 			sudo gem install hiera-eyaml
 
 			sudo mkdir -p /etc/eyaml/
@@ -44,10 +44,10 @@ Vagrant.configure(2) do |config|
 
 	config.vm.define "agent1" do |agent1|
 		agent1.vm.provision "shell", inline: <<-SHELL
-			sudo wget https://apt.puppetlabs.com/puppet-release-xenial.deb
+			sudo curl -s -o puppet-release-xenial.deb https://apt.puppetlabs.com/puppet-release-xenial.deb
 			sudo dpkg -i puppet-release-xenial.deb
-		 	sudo apt-get update	
-			sudo apt-get -y install puppet 
+		 	sudo apt-get -qq update	
+			sudo apt-get -y -qq install puppet 
 			sudo puppet agent --enable 
 		SHELL
 		agent1.vm.box = "ubuntu/xenial64"
