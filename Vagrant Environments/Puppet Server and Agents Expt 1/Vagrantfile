@@ -43,13 +43,7 @@ Vagrant.configure(2) do |config|
 	end
 
 	config.vm.define "agent1" do |agent1|
-		agent1.vm.provision "shell", inline: <<-SHELL
-			sudo curl -s -o puppet-release-xenial.deb https://apt.puppetlabs.com/puppet-release-xenial.deb
-			sudo dpkg -i puppet-release-xenial.deb
-		 	sudo apt-get -qq update	
-			sudo apt-get -y -qq install puppet 
-			sudo puppet agent --enable 
-		SHELL
+		agent1.vm.provision "shell", path: "vagrant_overlay_puppetagent.sh"
 		agent1.vm.box = "ubuntu/xenial64"
 		agent1.vm.network :private_network, ip: "10.0.0.10"
 		agent1.hostmanager.aliases = %w(agent1)
@@ -59,7 +53,9 @@ Vagrant.configure(2) do |config|
 	end
 
         config.vm.define "vaultserver" do |vaultserver|
-		vaultserver.vm.provision "shell", path: "vagrant_overlay_vaultserver.sh"
+		vaultserver.vm.provision "shell", path: "vagrant_overlay_puppetagent.sh"
+		vaultserver.vm.provision "shell", path: "vagrant_overlay_vault.sh"
+		vaultserver.vm.provision "shell", path: "vagrant_overlay_consul.sh"
 
 		vaultserver.vm.box = "ubuntu/xenial64"
 		vaultserver.vm.network :private_network, ip: "10.0.0.17"
@@ -69,4 +65,14 @@ Vagrant.configure(2) do |config|
                 vaultserver.hostmanager.include_offline = true
 
         end
+	config.vm.define "agent2" do |agent2|
+		agent2.vm.box = "centos/7"
+		agent2.vm.network :private_network, ip: "10.0.0.11"
+		agent2.hostmanager.aliases = %w(agent2)
+		agent2.hostmanager.enabled = true
+		agent2.hostmanager.ignore_private_ip = false
+		agent2.hostmanager.include_offline = true
+		agent2.vm.hostname = "agent2.local"
+		agent2.vm.provision "shell", path: "vagrant_overlay_puppetagent.sh"
+	end
 end

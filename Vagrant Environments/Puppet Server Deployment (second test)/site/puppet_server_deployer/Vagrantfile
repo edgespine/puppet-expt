@@ -38,20 +38,20 @@ Vagrant.configure("2") do |config|
     node.vm.provision "shell", inline: "#{agent_install_cmd} #{agent_install_params}"
 
   end
-  config.vm.define :windowsagent do |node|
-    ip       = '10.0.0.11'
-    hostname = 'windowsagent'
-    node.vm.provider "virtualbox" do |vb|
-      vb.memory = "4096"
-	  vb.cpus = "2"
-    end
-    node.vm.box              = "jacqinthebox/windowsserver2016"
-    node.vm.box_check_update = false
-    node.vm.synced_folder    ".", "/vagrant", disabled: true
-    node.vm.hostname         = hostname
-    node.vm.network :private_network, :ip => ip
-    node.vm.provision "shell",inline:"$p=\"C:\\Windows\\System32\\drivers\\etc\\hosts\";$hosts=gc $p;$new = $hosts + \"\`n#{puppetserver_ip} #{puppetserver_hostname}\";sc -path $p -value $new;gc $p"
-    node.vm.provision "shell",inline:"[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; $webClient = New-Object System.Net.WebClient; $webClient.DownloadFile(\'https://#{puppetserver_hostname}:8140/packages/current/install.ps1\', \'install.ps1\'); .\\install.ps1 custom_attributes:challengePassword=psk extension_requests:pp_role=webserver"
-  end
+#  config.vm.define :windowsagent do |node|
+#    ip       = '10.0.0.11'
+#    hostname = 'windowsagent'
+#    node.vm.provider "virtualbox" do |vb|
+#      vb.memory = "4096"
+#	  vb.cpus = "2"
+#    end
+#    node.vm.box              = "jacqinthebox/windowsserver2016"
+#    node.vm.box_check_update = false
+#    node.vm.synced_folder    ".", "/vagrant", disabled: true
+#    node.vm.hostname         = hostname
+#    node.vm.network :private_network, :ip => ip
+#    node.vm.provision "shell",inline:"$p=\"C:\\Windows\\System32\\drivers\\etc\\hosts\";$hosts=gc $p;$new = $hosts + \"\`n#{puppetserver_ip} #{puppetserver_hostname}\";sc -path $p -value $new;gc $p"
+#    node.vm.provision "shell",inline:"[Net.ServicePointManager]::ServerCertificateValidationCallback = {$true}; $webClient = New-Object System.Net.WebClient; $webClient.DownloadFile(\'https://#{puppetserver_hostname}:8140/packages/current/install.ps1\', \'install.ps1\'); .\\install.ps1 custom_attributes:challengePassword=psk extension_requests:pp_role=webserver"
+#  end
   
 end
